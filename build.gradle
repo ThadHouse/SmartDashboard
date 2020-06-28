@@ -39,6 +39,7 @@ allprojects {
 }
 
 wpilibVersioning.version.finalizeValue()
+version = wpilibVersioning.version.get()
 
 def outputsFolder = file("$buildDir/allOutputs")
 
@@ -118,7 +119,7 @@ publishing {
         }
         groupId 'edu.wpi.first.wpilib'
         artifactId 'SmartDashboard'
-        version wpilibVersioning.version.get()
+        version project.version
         }
     }
 }
@@ -146,6 +147,12 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:deprecation"
 }
 
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes["Implementation-Version"] = project.version as String
+        attributes["Built-Date"] = Instant.now().toString()
+    }
+}
 
 wrapper {
     gradleVersion = '6.0.1'
